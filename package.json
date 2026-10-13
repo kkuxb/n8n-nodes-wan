@@ -1,0 +1,48 @@
+{
+	"name": "n8n-nodes-wan",
+	"version": "0.1.0",
+	"description": "通过麦包 API 使用 Wan 3.0 生成、编辑和延长视频。",
+	"license": "MIT",
+	"author": {
+		"name": "kkuxb"
+	},
+	"keywords": [
+		"n8n-community-node-package",
+		"n8n",
+		"wan",
+		"wan3.0",
+		"maibao",
+		"AI视频生成"
+	],
+	"main": "dist/nodes/Wan/Wan.node.js",
+	"files": [
+		"dist"
+	],
+	"engines": {
+		"node": ">=22.16"
+	},
+	"packageManager": "npm@11.12.1",
+	"scripts": {
+		"build": "n8n-node build",
+		"lint": "n8n-node lint",
+		"lint:fix": "n8n-node lint --fix",
+		"test": "npm run build && node --test test/*.test.mjs"
+	},
+	"n8n": {
+		"n8nNodesApiVersion": 1,
+		"strict": true,
+		"credentials": [
+			"dist/credentials/MaibaoWanApi.credentials.js"
+		],
+		"nodes": [
+			"dist/nodes/Wan/Wan.node.js"
+		]
+	},
+	"devDependencies": {
+		"@n8n/node-cli": "^0.23.1",
+		"@types/node": "^24.0.0",
+		"eslint": "9.29.0",
+		"n8n-workflow": "^2.13.1",
+		"typescript": "^5.8.3"
+	}
+}
