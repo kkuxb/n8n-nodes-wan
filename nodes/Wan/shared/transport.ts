@@ -29,14 +29,14 @@ async function request(
 ): Promise<IDataObject> {
 	const credential = await executor.getCredentials('maibaoWanApi');
 	const apiKey = String(credential.apiKey ?? '').trim();
-	const baseUrl = String(credential.baseUrl ?? 'https://ai.maibao.chat')
+	const baseUrl = String(credential.baseUrl ?? 'https://ai.lmao.net.cn')
 		.trim()
 		.replace(/\/+$/, '');
 	validateUrl(baseUrl);
 	const parsed = new URL(baseUrl);
 	if (parsed.search || parsed.hash || parsed.pathname !== '/')
 		throw new Error('Base URL 应为服务根地址，不包含路径、查询参数或片段');
-	if (!apiKey) throw new Error('请配置麦包 API Key');
+	if (!apiKey) throw new Error('请配置所选服务商的 API Key');
 	try {
 		const response: unknown = await executor.helpers.httpRequest({
 			method,
@@ -56,7 +56,7 @@ async function request(
 			typeof response !== 'object' ||
 			Array.isArray(response)
 		)
-			throw new Error('麦包返回了非 JSON 对象响应');
+			throw new Error('服务商返回了非 JSON 对象响应');
 		return response as IDataObject;
 	} catch (error) {
 		const detail = error as {
@@ -79,7 +79,7 @@ async function request(
 					? raw.message
 					: safeMessage(error, apiKey);
 		throw new WanRequestError(
-			`${method === 'POST' ? '创建请求失败或结果不明确；未自动重发，请先核实麦包任务记录。' : '查询请求失败。'} ${safeMessage(new Error(message), apiKey)}`,
+			`${method === 'POST' ? '创建请求失败或结果不明确；未自动重发，请先核实服务商任务记录。' : '查询请求失败。'} ${safeMessage(new Error(message), apiKey)}`,
 			status,
 			typeof problem.code === 'string' ? problem.code : detail.code,
 		);

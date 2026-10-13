@@ -46,7 +46,7 @@ export const createProperties: INodeProperties[] = [
 		name: 'model',
 		type: 'options',
 		default: 'wan3.0-video',
-		options: [{ name: 'Wan 3.0 Video（麦包）', value: 'wan3.0-video' }],
+		options: [{ name: 'Wan 3.0 Video', value: 'wan3.0-video' }],
 		displayOptions: { show: create },
 	},
 	{

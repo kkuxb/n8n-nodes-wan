@@ -37,7 +37,7 @@ export class Wan implements INodeType {
 		version: 1,
 		subtitle:
 			'={{$parameter["operation"] === "get" ? "查询任务" : "创建任务"}}',
-		description: '通过麦包使用 Wan 3.0 创建、编辑和延长视频，支持等待及下载',
+		description: '通过龙猫或麦包 API 使用 Wan 3.0 创建、编辑和延长视频，支持等待及下载',
 		defaults: { name: 'Wan 视频生成' },
 		inputs: ['main'],
 		outputs: ['main'],
@@ -167,7 +167,7 @@ export class Wan implements INodeType {
 					if (!task.taskId)
 						throw new NodeOperationError(
 							this.getNode(),
-							'麦包未返回 task_id/id，创建结果不明确；未重发，请先核实供应商任务记录',
+							'服务商未返回 task_id/id，创建结果不明确；未重发，请先核实供应商任务记录',
 						);
 					if (!wait && task.status === 'unknown') {
 						task.shouldPoll = true;

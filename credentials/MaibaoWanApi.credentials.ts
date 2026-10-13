@@ -8,10 +8,24 @@ import type {
 
 export class MaibaoWanApi implements ICredentialType {
 	name = 'maibaoWanApi';
-	displayName = '麦包 Wan API';
-	documentationUrl = 'https://ai.maibao.chat';
+	displayName = 'Wan API';
+	documentationUrl = 'https://ai.lmao.net.cn';
 	icon: Icon = 'file:wan.svg';
 	properties: INodeProperties[] = [
+		{
+			displayName: '服务商',
+			// Keep the stored URL so existing Maibao credentials retain their provider.
+			name: 'baseUrl',
+			type: 'options',
+			options: [
+				{ name: '麦包API', value: 'https://ai.maibao.chat' },
+				{ name: '龙猫API', value: 'https://ai.lmao.net.cn' },
+			],
+			required: true,
+			default: 'https://ai.lmao.net.cn',
+			description:
+				'麦包API：https://ai.maibao.chat；龙猫API：https://ai.lmao.net.cn。请填写所选服务商的 API Key',
+		},
 		{
 			displayName: 'API Key',
 			name: 'apiKey',
@@ -19,14 +33,6 @@ export class MaibaoWanApi implements ICredentialType {
 			typeOptions: { password: true },
 			required: true,
 			default: '',
-		},
-		{
-			displayName: 'Base URL',
-			name: 'baseUrl',
-			type: 'string',
-			required: true,
-			default: 'https://ai.maibao.chat',
-			description: '麦包服务根地址，不包含 /v1 或 /api/v1 后缀',
 		},
 	];
 	authenticate: IAuthenticateGeneric = {

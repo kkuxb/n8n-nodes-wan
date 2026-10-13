@@ -1,6 +1,6 @@
 # n8n-nodes-wan
 
-通过**麦包**的 `wan3.0-video` 在 n8n 中生成、编辑和延长视频。独立社区节点包，显示名为 **Wan 视频生成**。
+通过**龙猫API**或**麦包API**的 `wan3.0-video` 在 n8n 中生成、编辑和延长视频。独立社区节点包，显示名为 **Wan 视频生成**。
 
 默认 **1080P、自动比例、5 秒、有声、开启提示词改写、关闭水印**；创建任务默认等待完成并下载视频。视频编辑、延长默认自动时长。
 
@@ -11,7 +11,7 @@
 ```bash
 mkdir -p ~/.n8n/nodes
 cd ~/.n8n/nodes
-npm install /absolute/path/n8n-nodes-wan-0.1.0.tgz
+npm install /absolute/path/n8n-nodes-wan-0.1.1.tgz
 ```
 
 Docker 部署需先将包挂载或复制进容器，使用容器内路径。安装目录由实际 n8n 用户目录决定，不要安装到不相关的宿主机全局目录。
@@ -20,10 +20,12 @@ Docker 部署需先将包挂载或复制进容器，使用容器内路径。安�
 
 ## 凭证
 
-创建「麦包 Wan API」凭证：
+创建「Wan API」凭证：
 
-- **API Key**：麦包的 Key，由 n8n 加密保存。
-- **Base URL**：默认 `https://ai.maibao.chat`，只填根地址，不加 `/v1`、`/api/v1` 或 `/alibailian`。
+- **服务商**：默认「龙猫API」（`https://ai.lmao.net.cn`），也可选「麦包API」（`https://ai.maibao.chat`）。选择后自动使用对应根地址，接口后缀不变。
+- **API Key**：所选服务商的 Key，由 n8n 加密保存；切换服务商时请填写对应 Key。
+
+升级后已有麦包凭证保留原地址和工作流绑定；新建凭证默认龙猫API。内部凭证类型仍为 `maibaoWanApi`，原 `baseUrl` 字段改为服务商下拉框。旧版自定义地址仍保留；如需改用内置服务商，在下拉框重新选择并保存。
 
 凭证测试读取模型列表，仅验证密钥可访问接口，不证明视频生成权限或余额足够。实际生成通过 `/api/v1/services/aigc/video-generation/video-synthesis`，查询通过 `/api/v1/tasks/{task_id}`。
 
@@ -101,7 +103,7 @@ Docker 部署需先将包挂载或复制进容器，使用容器内路径。安�
 
 必须把轮询上下文带回下一次查询，避免每次执行都重置未知状态窗口。
 
-可导入示例：[创建并下载](examples/create-and-download.json)、[外部 Wait 轮询](examples/resumable-polling.json)。导入后为 Wan 节点选择你的麦包凭证再执行，会产生视频生成费用。轮询示例的 IF false 输出包含成功结果或停止原因，后续可按 `isSuccess`、`error`、`queryError` 分别处理。
+可导入示例：[创建并下载](examples/create-and-download.json)、[外部 Wait 轮询](examples/resumable-polling.json)。导入后为 Wan 节点选择你的服务商凭证再执行，会产生视频生成费用。轮询示例的 IF false 输出包含成功结果或停止原因，后续可按 `isSuccess`、`error`、`queryError` 分别处理。
 
 不要给「创建任务」开启 n8n 的 Retry On Fail，也不要把查询／下载的错误分支接回创建节点。一次创建响应超时可能已被服务商受理，先核实任务记录；手动重新执行创建也会生成新的付费任务。
 
@@ -111,7 +113,7 @@ Docker 部署需先将包挂载或复制进容器，使用容器内路径。安�
 | --- | --- |
 | `taskId` | 后续查询使用的 ID |
 | `status` | queued／running／succeeded／failed／cancelled／expired／unknown |
-| `providerStatus` | 麦包原始状态，例如 in_progress、completed |
+| `providerStatus` | 服务商原始状态，例如 in_progress、completed |
 | `videoUrl` | 成功结果 URL，建议及时转存 |
 | `isSuccess`、`isFailure`、`isTerminal`、`shouldPoll` | 工作流判断字段 |
 | `timedOut`、`pollCount`、`waitedMs`、`pollingContext` | 查询执行信息（查询或等待后提供） |
@@ -121,7 +123,7 @@ Docker 部署需先将包挂载或复制进容器，使用容器内路径。安�
 | `requestSummary` | 创建时有效参数和提示词，省略完整 binary |
 | `raw` | 供应商原始响应，不包含请求认证头 |
 
-`progress` 仅透传，不能用于预测剩余时间。查询／下载失败不等于视频生成失败。麦包的任务保留时间与结果 URL 有效期未独立核实，不套用官方账号或 Seedance 的期限承诺。
+`progress` 仅透传，不能用于预测剩余时间。查询／下载失败不等于视频生成失败。服务商的任务保留时间与结果 URL 有效期未独立核实，不套用官方账号或 Seedance 的期限承诺。
 
 ## 开发和验收
 
@@ -137,3 +139,5 @@ npm pack
 `scripts/n8n-smoke.mjs` 在独立的 n8n CLI profile 中查询已有任务并下载，验证实际 n8n 执行和 filesystem binary，不创建视频任务。
 
 测试证据在本机 `.local/`（Git 忽略），脱敏结论见 [验收报告](docs/verification/acceptance.md)。单次成片成功不代表所有素材或所有参数组合都有同样表现。
+
+0.1.1 新增龙猫API地址选择，已覆盖本地路由、凭证测试表达式及旧凭证兼容性验证。已有付费生成验收均使用麦包；龙猫尚未进行真实生成测试。

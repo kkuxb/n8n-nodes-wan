@@ -68,7 +68,7 @@ export function mapTaskResponse(
 					resultError: {
 						code: 'MISSING_VIDEO_URL',
 						message:
-							'任务成功，但麦包响应未提供 metadata.url；可稍后继续查询。',
+							'任务成功，但服务商响应未提供 metadata.url；可稍后继续查询。',
 					},
 				}
 			: {}),
