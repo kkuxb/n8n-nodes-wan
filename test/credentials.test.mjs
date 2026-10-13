@@ -9,7 +9,9 @@ import {
 import { buildCreateRequest } from '../dist/nodes/Wan/shared/create.js';
 import { executor, baseInput } from './helpers.mjs';
 
-const { Expression, NodeHelpers } = createRequire(import.meta.url)('n8n-workflow');
+const { Expression, NodeHelpers } = createRequire(import.meta.url)(
+	'n8n-workflow',
+);
 const credential = new MaibaoWanApi();
 const withDefaults = (saved) =>
 	NodeHelpers.getNodeParameters(
@@ -46,6 +48,13 @@ for (const baseUrl of ['https://ai.maibao.chat', 'https://ai.lmao.net.cn']) {
 		assert.equal(
 			testHost + credential.test.request.url,
 			`${baseUrl}/v1/models`,
+		);
+		assert.equal(
+			new Expression('UTC').resolveSimpleParameterValue(
+				credential.test.request.headers.Authorization,
+				{ $credentials: saved },
+			),
+			'Bearer private-test-key',
 		);
 		const { context, requests } = executor({}, undefined, {
 			credentials: saved,

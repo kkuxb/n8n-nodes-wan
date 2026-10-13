@@ -2,6 +2,83 @@ import type { INodeProperties } from 'n8n-workflow';
 import { RATIOS, RESOLUTIONS } from '../shared/constants';
 
 const create = { operation: ['create'] };
+const referenceFields = (
+	defaultType: 'reference_image' | 'reference_video',
+): INodeProperties[] => [
+	{
+		displayName: '素材类型',
+		name: 'type',
+		type: 'options',
+		default: defaultType,
+		options: [
+			{ name: '图片', value: 'reference_image' },
+			{ name: '视频', value: 'reference_video' },
+			{ name: '音频', value: 'reference_audio' },
+		],
+	},
+	{
+		displayName: '图片来源',
+		name: 'source',
+		type: 'options',
+		default: 'url',
+		options: [
+			{ name: 'URL', value: 'url' },
+			{ name: 'Binary 文件', value: 'binary' },
+		],
+		displayOptions: { show: { type: ['reference_image'] } },
+	},
+	{
+		displayName: '图片 URL',
+		name: 'imageUrl',
+		type: 'string',
+		default: '',
+		required: true,
+		displayOptions: {
+			show: { type: ['reference_image'], source: ['url'] },
+		},
+	},
+	{
+		displayName: 'Binary 属性名',
+		name: 'binaryProperty',
+		type: 'string',
+		default: 'data',
+		required: true,
+		description: '上游输入中的图片 Binary 属性名，例如 data 或 image1',
+		displayOptions: {
+			show: { type: ['reference_image'], source: ['binary'] },
+		},
+	},
+	{
+		displayName: '素材 URL',
+		name: 'url',
+		type: 'string',
+		default: '',
+		required: true,
+		description: '无需登录即可访问的视频或音频 URL；各类型总时长不超过 15 秒',
+		displayOptions: { show: { type: ['reference_video', 'reference_audio'] } },
+	},
+];
+const references = (
+	intents: string[],
+	defaultType: 'reference_image' | 'reference_video',
+): INodeProperties => ({
+	displayName: '参考素材',
+	name: 'references',
+	type: 'fixedCollection',
+	default: {},
+	placeholder: '添加素材',
+	typeOptions: { multipleValues: true },
+	displayOptions: {
+		show: { ...create, mode: ['multimodal'], intent: intents },
+	},
+	options: [
+		{
+			name: 'items',
+			displayName: '素材',
+			values: referenceFields(defaultType),
+		},
+	],
+});
 const imageFields = (
 	prefix: string,
 	label: string,
@@ -44,9 +121,14 @@ export const createProperties: INodeProperties[] = [
 	{
 		displayName: '模型',
 		name: 'model',
-		type: 'options',
+		type: 'hidden',
 		default: 'wan3.0-video',
-		options: [{ name: 'Wan 3.0 Video', value: 'wan3.0-video' }],
+	},
+	{
+		displayName: '模型：Wan 3.0 Video（固定）',
+		name: 'modelNotice',
+		type: 'notice',
+		default: '',
 		displayOptions: { show: create },
 	},
 	{
@@ -112,78 +194,17 @@ export const createProperties: INodeProperties[] = [
 	},
 	...imageFields('firstFrame', '首帧', ['firstFrame', 'firstLastFrame']),
 	...imageFields('lastFrame', '尾帧', ['firstLastFrame']),
+	references(['reference'], 'reference_image'),
+	references(['edit', 'extend'], 'reference_video'),
 	{
-		displayName: '参考素材',
-		name: 'references',
-		type: 'fixedCollection',
-		default: {},
-		placeholder: '添加素材',
-		typeOptions: { multipleValues: true },
-		displayOptions: { show: { ...create, mode: ['multimodal'] } },
-		options: [
-			{
-				name: 'items',
-				displayName: '素材',
-				values: [
-					{
-						displayName: '素材	URL',
-						name: 'url',
-						type: 'string',
-						default: '',
-						description:
-							'无需登录即可访问的视频或音频	URL；各类型总时长不超过	15	秒',
-					},
-					{
-						displayName: '素材类型',
-						name: 'type',
-						type: 'options',
-						default: 'reference_image',
-						options: [
-							{
-								name: '图片',
-								value: 'reference_image',
-							},
-							{
-								name: '视频',
-								value: 'reference_video',
-							},
-							{
-								name: '音频',
-								value: 'reference_audio',
-							},
-						],
-					},
-					{
-						displayName: '图片	URL',
-						name: 'imageUrl',
-						type: 'string',
-						default: '',
-					},
-					{
-						displayName: '图片来源',
-						name: 'source',
-						type: 'options',
-						default: 'url',
-						options: [
-							{
-								name: 'URL',
-								value: 'url',
-							},
-							{
-								name: 'Binary	文件',
-								value: 'binary',
-							},
-						],
-					},
-					{
-						displayName: 'Binary	属性名',
-						name: 'binaryProperty',
-						type: 'string',
-						default: 'data',
-					},
-				],
-			},
-		],
+		displayName:
+			'编辑和延长至少需要一段参考视频；也可添加图片或音频作为补充参考。',
+		name: 'editingMediaNotice',
+		type: 'notice',
+		default: '',
+		displayOptions: {
+			show: { ...create, mode: ['multimodal'], intent: ['edit', 'extend'] },
+		},
 	},
 	{
 		displayName: '分辨率',

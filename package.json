@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-wan",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"description": "通过龙猫或麦包 API 使用 Wan 3.0 生成、编辑和延长视频。",
 	"license": "MIT",
 	"author": {

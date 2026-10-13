@@ -1,5 +1,4 @@
 import type {
-	IAuthenticateGeneric,
 	ICredentialTestRequest,
 	ICredentialType,
 	INodeProperties,
@@ -35,18 +34,14 @@ export class MaibaoWanApi implements ICredentialType {
 			default: '',
 		},
 	];
-	authenticate: IAuthenticateGeneric = {
-		type: 'generic',
-		properties: {
-			headers: { Authorization: '=Bearer {{$credentials.apiKey}}' },
-		},
-	};
+	// Authentication is scoped to this node and its credential test, not HTTP Request.
 	test: ICredentialTestRequest = {
 		request: {
 			baseURL:
 				'={{$credentials.baseUrl.endsWith("/") ? $credentials.baseUrl.slice(0, -1) : $credentials.baseUrl}}',
 			url: '/v1/models',
 			method: 'GET',
+			headers: { Authorization: '=Bearer {{$credentials.apiKey}}' },
 		},
 	};
 }
