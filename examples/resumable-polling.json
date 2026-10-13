@@ -1,0 +1,19 @@
+{
+  "name": "Wan - 外部 Wait 轮询",
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "nodes": [
+    { "id": "manual", "name": "手动开始", "type": "n8n-nodes-base.manualTrigger", "typeVersion": 1, "position": [0, 0], "parameters": {} },
+    { "id": "create", "name": "创建任务", "type": "n8n-nodes-wan.wan", "typeVersion": 1, "position": [240, 0], "parameters": { "operation": "create", "mode": "text", "prompt": "一只橙色玩具机器人在木桌上挥手。", "resolution": "1080P", "waitForCompletion": false } },
+    { "id": "wait", "name": "等待 20 秒", "type": "n8n-nodes-base.wait", "typeVersion": 1.1, "position": [480, 0], "parameters": { "resume": "timeInterval", "amount": 20, "unit": "seconds" } },
+    { "id": "query", "name": "查询任务", "type": "n8n-nodes-wan.wan", "typeVersion": 1, "position": [720, 0], "parameters": { "operation": "get", "taskId": "={{ $json.taskId }}", "pollingContext": "={{ $json.pollingContext || {} }}", "waitForCompletion": false, "downloadVideo": true } },
+    { "id": "if", "name": "需要继续查询", "type": "n8n-nodes-base.if", "typeVersion": 2.2, "position": [960, 0], "parameters": { "conditions": { "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict", "version": 2 }, "conditions": [{ "id": "poll", "leftValue": "={{ $json.shouldPoll }}", "rightValue": "", "operator": { "type": "boolean", "operation": "true", "singleValue": true } }], "combinator": "and" } } }
+  ],
+  "connections": {
+    "手动开始": { "main": [[{ "node": "创建任务", "type": "main", "index": 0 }]] },
+    "创建任务": { "main": [[{ "node": "等待 20 秒", "type": "main", "index": 0 }]] },
+    "等待 20 秒": { "main": [[{ "node": "查询任务", "type": "main", "index": 0 }]] },
+    "查询任务": { "main": [[{ "node": "需要继续查询", "type": "main", "index": 0 }]] },
+    "需要继续查询": { "main": [[{ "node": "等待 20 秒", "type": "main", "index": 0 }], []] }
+  }
+}

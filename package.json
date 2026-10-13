@@ -16,7 +16,9 @@
 	],
 	"main": "dist/nodes/Wan/Wan.node.js",
 	"files": [
-		"dist"
+		"dist",
+		"docs/verification",
+		"examples"
 	],
 	"engines": {
 		"node": ">=22.16"

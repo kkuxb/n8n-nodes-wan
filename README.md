@@ -101,6 +101,8 @@ Docker 部署需先将包挂载或复制进容器，使用容器内路径。安�
 
 必须把轮询上下文带回下一次查询，避免每次执行都重置未知状态窗口。
 
+可导入示例：[创建并下载](examples/create-and-download.json)、[外部 Wait 轮询](examples/resumable-polling.json)。导入后为 Wan 节点选择你的麦包凭证再执行，会产生视频生成费用。轮询示例的 IF false 输出包含成功结果或停止原因，后续可按 `isSuccess`、`error`、`queryError` 分别处理。
+
 不要给「创建任务」开启 n8n 的 Retry On Fail，也不要把查询／下载的错误分支接回创建节点。一次创建响应超时可能已被服务商受理，先核实任务记录；手动重新执行创建也会生成新的付费任务。
 
 ## 输出

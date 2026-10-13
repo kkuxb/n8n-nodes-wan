@@ -1,0 +1,10 @@
+{
+  "name": "Wan - 创建并下载视频",
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "nodes": [
+    { "id": "manual", "name": "手动开始", "type": "n8n-nodes-base.manualTrigger", "typeVersion": 1, "position": [0, 0], "parameters": {} },
+    { "id": "wan", "name": "Wan 视频生成", "type": "n8n-nodes-wan.wan", "typeVersion": 1, "position": [260, 0], "parameters": { "operation": "create", "mode": "text", "prompt": "一个橙色玩具机器人在木桌上缓慢挥手，柔和日光，固定机位。", "resolution": "1080P", "ratio": "adaptive", "duration": 5, "audio": true, "waitForCompletion": true, "waitTimeoutMinutes": 20, "downloadVideo": true } }
+  ],
+  "connections": { "手动开始": { "main": [[{ "node": "Wan 视频生成", "type": "main", "index": 0 }]] } }
+}
