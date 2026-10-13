@@ -1,0 +1,30 @@
+{
+	"git": {
+		"requireBranch": "master",
+		"requireCleanWorkingDir": true,
+		"requireUpstream": true,
+		"commitMessage": "chore: release v${version}",
+		"tagName": "v${version}",
+		"tagAnnotation": "Release v${version}",
+		"pushRepo": "origin",
+		"pushArgs": ["--atomic", "--follow-tags"]
+	},
+	"npm": {
+		"publish": false
+	},
+	"github": {
+		"release": true,
+		"releaseName": "Wan 视频生成 v${version}",
+		"releaseNotes": "node scripts/release-assets.mjs notes ${version}",
+		"assets": [
+			".local/releases/${version}/n8n-nodes-wan-${version}.tgz",
+			".local/releases/${version}/SHA256SUMS.txt"
+		]
+	},
+	"hooks": {
+		"before:init": ["npm test", "npm run lint"],
+		"before:bump": "node scripts/release-assets.mjs check ${version}",
+		"after:bump": "node scripts/release-assets.mjs pack ${version}",
+		"after:release": "node scripts/release-assets.mjs verify ${version}"
+	}
+}
