@@ -4,9 +4,13 @@
 
 默认 **1080P、自动比例、5 秒、有声、开启提示词改写、关闭水印**；创建任务默认等待完成并下载视频。视频编辑、延长默认自动时长。
 
+当前版本 **0.1.1** · [GitHub 仓库](https://github.com/kkuxb/n8n-nodes-wan) · [版本更新记录](CHANGELOG.md) · [问题反馈](https://github.com/kkuxb/n8n-nodes-wan/issues)
+
 ## 安装
 
-本仓库提供源码和本地 `.tgz` 安装包，尚未发布 npm。自行部署 n8n 时，可在其社区节点目录中安装本地包并重启 n8n：
+从 [v0.1.1 Release](https://github.com/kkuxb/n8n-nodes-wan/releases/tag/v0.1.1) 下载 `n8n-nodes-wan-0.1.1.tgz`，同页提供 `SHA256SUMS.txt` 用于校验。此版本通过 GitHub Release 分发，尚未发布 npm。
+
+自行部署 n8n 时，在其社区节点目录中安装下载的包并重启 n8n：
 
 ```bash
 mkdir -p ~/.n8n/nodes
@@ -15,6 +19,8 @@ npm install /absolute/path/n8n-nodes-wan-0.1.1.tgz
 ```
 
 Docker 部署需先将包挂载或复制进容器，使用容器内路径。安装目录由实际 n8n 用户目录决定，不要安装到不相关的宿主机全局目录。
+
+从 0.1.0 升级也使用上述安装命令，然后重启 n8n。已有工作流和麦包凭证可继续使用；新建「Wan API」凭证默认选择龙猫API。切换服务商时，须同时使用该服务商的 Key，并在同一服务商查询其生成的任务。
 
 开发与验收环境为 Node.js 24.15.0、n8n 2.20.9；包声明 Node.js >=22.16，其他 n8n 版本未逐一实测。无第三方运行时依赖；使用 n8n 提供的 HTTP、凭证和 binary helper。
 

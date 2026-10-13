@@ -6,17 +6,27 @@
 	"author": {
 		"name": "kkuxb"
 	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/kkuxb/n8n-nodes-wan.git"
+	},
+	"homepage": "https://github.com/kkuxb/n8n-nodes-wan#readme",
+	"bugs": {
+		"url": "https://github.com/kkuxb/n8n-nodes-wan/issues"
+	},
 	"keywords": [
 		"n8n-community-node-package",
 		"n8n",
 		"wan",
 		"wan3.0",
 		"maibao",
+		"lmao",
 		"AI视频生成"
 	],
 	"main": "dist/nodes/Wan/Wan.node.js",
 	"files": [
 		"dist",
+		"CHANGELOG.md",
 		"docs/verification",
 		"examples"
 	],
